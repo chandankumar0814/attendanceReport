@@ -64,14 +64,14 @@
         
         <div class="bg-white rounded-3xl p-5 shadow-xl border border-white/50">
             <div id="dropZone" class="relative border-2 border-dashed border-slate-200 rounded-2xl p-8 text-center bg-slate-50 transition-all">
-                <input type="file" id="imageInput" accept="image/*" capture="environment" onchange="onFilePicked(this)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                <input type="file" id="imageInput" accept="image/*" onchange="onFilePicked(this)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
                 
                 <div id="promptContent" class="space-y-2">
                     <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto shadow-sm">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                     </div>
-                    <p class="text-blue-600 font-bold">Snap Register Photo</p>
-                    <p class="text-slate-400 text-[10px]">Align the page columns horizontally</p>
+                    <p class="text-blue-600 font-bold">Upload or Take Photo</p>
+                    <p class="text-slate-400 text-[10px]">Select from Gallery or use Camera</p>
                 </div>
 
                 <div id="successContent" class="hidden flex flex-col items-center">
@@ -87,7 +87,7 @@
 
         <div id="loading" class="hidden py-8 text-center">
             <div class="inline-block w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-3"></div>
-            <p class="text-blue-600 font-bold text-xs animate-pulse tracking-wide uppercase">Gemini 3 is Reading...</p>
+            <p class="text-blue-600 font-bold text-xs animate-pulse tracking-wide uppercase">AI is analyzing register...</p>
         </div>
 
         <div id="results" class="hidden bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100">
@@ -111,7 +111,7 @@
             <p class="text-[9px] font-bold text-slate-400 uppercase">Working Days</p>
             <p class="text-sm font-black"><span id="daysCount">0</span> Days</p>
         </div>
-        <button onclick="changeDays()" class="bg-blue-600 hover:bg-blue-500 active:scale-90 transition-all px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-tighter">Correct Days</button>
+        <button onclick="changeDays()" class="bg-blue-600 hover:bg-blue-500 active:scale-90 transition-all px-6 py-3 rounded-full text-[10px] font-black uppercase">Correct Days</button>
     </div>
 
     <script type="module">
@@ -131,14 +131,15 @@
 
         window.analyze = async () => {
             const input = document.getElementById('imageInput');
-            if(!input.files[0]) return alert("Take a photo first!");
+            if(!input.files[0]) return alert("Please select or take a photo!");
             toggleUI(true);
 
             try {
+                // Using Gemini 2.5 Flash for the best handwritten OCR results
                 const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" }, { apiVersion: "v1" });
                 const base64 = await toBase64(input.files[0]);
 
-                const prompt = "Act as a school data clerk. Read this register photo. Identify student names. Count total present marks '|' and absent 'Ab'. Ensure total columns are equal for all. Return JSON only: [{'n':'NAME','p':10,'a':2}]";
+                const prompt = "Act as a precision registrar. Read this attendance sheet. Identify student names. Count total present marks '|' or '1' and absent 'Ab'. Make sure the total number of days is consistent. Return JSON ONLY: [{'n':'NAME','p':10,'a':2}]";
 
                 const result = await model.generateContent([prompt, base64]);
                 const data = JSON.parse(result.response.text().replace(/```json|```/g, ""));
@@ -178,8 +179,8 @@
 
         function render(data) {
             document.getElementById('tableBody').innerHTML = data.map(r => `
-                <tr class="active:bg-slate-50">
-                    <td class="px-6 py-4 font-bold text-slate-700 truncate max-w-[140px] uppercase">${r.n}</td>
+                <tr>
+                    <td class="px-6 py-4 font-bold text-slate-700 uppercase">${r.n}</td>
                     <td class="px-4 py-4 text-center text-green-600 font-black">${r.p}</td>
                     <td class="px-4 py-4 text-center text-red-400 font-black">${r.a}</td>
                 </tr>`).join('');
@@ -201,7 +202,7 @@
         }
 
         window.download = () => {
-            const csv = "Name,P,A\n" + window.rawScan.map(r => `"${r.n}",${r.p},${r.a}`).join("\n");
+            const csv = "Name,Present,Absent\n" + window.rawScan.map(r => `"${r.n}",${r.p},${r.a}`).join("\n");
             const a = document.createElement('a');
             a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
             a.download = "Attendance_Report.csv";
