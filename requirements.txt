@@ -1,0 +1,6 @@
+streamlit
+pandas
+streamlit-cropper
+Pillow
+numpy
+easyocr
