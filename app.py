@@ -6,6 +6,10 @@ import logging
 from PIL import Image
 from streamlit_cropper import st_cropper
 from paddleocr import PaddleOCR
+import os
+# Disable the broken CPU acceleration that causes the NotImplementedError
+os.environ['FLAGS_use_mkldnn'] = '0'
+os.environ['FLAGS_enable_pir_api'] = '0'
 
 # Disable noisy background logs
 logging.getLogger("ppocr").setLevel(logging.ERROR)
@@ -13,8 +17,8 @@ logging.getLogger("ppocr").setLevel(logging.ERROR)
 # Initialize PaddleOCR 3.x correctly
 @st.cache_resource
 def load_ocr():
-    # 'use_angle_cls' handles orientation. 'show_log' is now removed for 3.x compatibility.
-    return PaddleOCR(use_angle_cls=True, lang='en')
+    # Adding enable_mkldnn=False is the specific fix for this crash
+    return PaddleOCR(use_angle_cls=True, lang='en', enable_mkldnn=False)
 
 ocr_engine = load_ocr()
 
@@ -97,3 +101,4 @@ if uploaded_file:
             # Download link
             csv = df.to_csv(index=False).encode('utf-8')
             st.download_button("📩 Download Excel/CSV", data=csv, file_name="attendance_report.csv")
+
