@@ -1,7 +1,8 @@
 streamlit
 streamlit-cropper
+paddlepaddle
+paddleocr
 opencv-python-headless
 pandas
 numpy
 Pillow
-easyocr
