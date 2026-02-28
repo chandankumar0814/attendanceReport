@@ -4,51 +4,75 @@ from PIL import Image
 import pandas as pd
 import io
 
-# 1. Setup API (In Streamlit Cloud, use st.secrets for safety)
-API_KEY = st.sidebar.text_input("Enter Gemini API Key", type="password")
-if API_KEY:
-    genai.configure(api_key=API_KEY)
+# 1. Configure the API Key
+GEMINI_API_KEY = "AIzaSyCqS9flyeUi8Lcvn_nEbH0jDCNe3oIxB0w"
+genai.configure(api_key=GEMINI_API_KEY)
 
-st.title("📊 AI Attendance Scanner for Pallavi")
-st.write("Using Gemini AI to extract attendance marks directly from your photo.")
+st.set_page_config(page_title="AI Attendance Scanner", layout="wide")
+
+st.title("📑 AI Attendance Scanner for Pallavi")
+st.info("This app uses Gemini AI to read handwritten registers and calculate totals.")
 
 uploaded_file = st.file_uploader("Upload Register Photo", type=['jpg', 'jpeg', 'png'])
 
-if uploaded_file and API_KEY:
+if uploaded_file:
+    # Display the uploaded image
     img = Image.open(uploaded_file)
-    st.image(img, caption="Uploaded Register", use_container_width=True)
+    st.image(img, caption="Register Preview", use_container_width=True)
     
-    if st.button("Analyze with AI"):
-        with st.spinner("AI is reading the handwriting..."):
-            # Initialize the model
-            model = genai.GenerativeModel('gemini-1.5-flash')
-            
-            # The Prompt: Telling the AI exactly how to format the data
-            prompt = """
-            Look at this attendance register. 
-            1. Identify each student name.
-            2. Count the '||' symbols as 'Present'.
-            3. Count 'Ab' as 'Absent'.
-            4. Return the data ONLY as a valid CSV table with headers: 
-               Student Name, Present, Absent
-            """
-            
-            # Send image and prompt to API
-            response = model.generate_content([prompt, img])
-            
-            # 2. Display Result
+    if st.button("🚀 Analyze Register"):
+        with st.spinner("AI is processing the handwriting..."):
             try:
-                # Clean the response to ensure it's just CSV data
-                csv_data = response.text.replace('```csv', '').replace('```', '').strip()
-                df = pd.read_csv(io.StringIO(csv_data))
+                # Initialize Gemini 1.5 Flash (Fast & Accurate for OCR)
+                model = genai.GenerativeModel('gemini-1.5-flash')
                 
-                st.success("Analysis Complete!")
-                st.table(df)
+                # Instruction for the AI
+                prompt = """
+                Analyze this attendance register image:
+                1. Identify the Student Names in the first column.
+                2. For each student, count the number of vertical tally marks '||' or '1' as 'Present'.
+                3. Count 'Ab' or 'A' entries as 'Absent'.
+                4. Calculate the 'Total Days' (Present + Absent).
+                5. Format the output ONLY as a clean CSV table with these headers: 
+                   Student Name, Present, Absent, Total Days
+                """
                 
-                # Download link
-                st.download_button("📩 Download CSV", data=csv_data, file_name="attendance.csv")
+                # Generate content from image
+                response = model.generate_content([prompt, img])
+                
+                # Clean up the AI response to get the raw CSV data
+                raw_text = response.text
+                csv_start = raw_text.find("Student Name")
+                if csv_start != -1:
+                    clean_csv = raw_text[csv_start:].strip().replace('```', '')
+                    
+                    # Convert to DataFrame
+                    df = pd.read_csv(io.StringIO(clean_csv))
+                    
+                    # Display Results
+                    st.success("Analysis Complete!")
+                    
+                    # Summary Metrics
+                    c1, c2, c3 = st.columns(3)
+                    c1.metric("Total Students Found", len(df))
+                    c2.metric("Avg Attendance", f"{df['Present'].mean():.1f}")
+                    c3.metric("Class Avg %", f"{(df['Present'].sum() / df['Total Days'].sum() * 100):.1f}%")
+                    
+                    st.dataframe(df, use_container_width=True)
+                    
+                    # Download Button
+                    st.download_button(
+                        label="📩 Download Excel (CSV)",
+                        data=clean_csv,
+                        file_name="attendance_report.csv",
+                        mime="text/csv"
+                    )
+                else:
+                    st.error("The AI couldn't find a table structure. Try a clearer photo.")
+                    st.write("AI Raw Response:", raw_text)
+                    
             except Exception as e:
-                st.error("The AI had trouble formatting the table. Here is the raw text:")
-                st.write(response.text)
-elif not API_KEY:
-    st.warning("Please enter your Gemini API Key in the sidebar to start.")
+                st.error(f"An error occurred: {e}")
+
+else:
+    st.write("Please upload a clear photo of the register page to begin.")
