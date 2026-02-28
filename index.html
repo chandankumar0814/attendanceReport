@@ -160,6 +160,10 @@
         async function toBase64(f) { return new Promise(r => { const reader = new FileReader(); reader.onloadend = () => r({ inlineData: { data: reader.result.split(',')[1], mimeType: f.type } }); reader.readAsDataURL(f); }); }
         function toggleUI(load) { document.getElementById('mainBtn').disabled = load; document.getElementById('loading').classList.toggle('hidden', !load); if(load) document.getElementById('results').classList.add('hidden'); }
         window.download = () => { const csv = "Name,P,A\n" + window.rawScan.map(r => `"${r.n}",${r.p},${r.a}`).join("\n"); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = "BOMIS.csv"; a.click(); };
+
+        if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js');
+}
     </script>
 </body>
 </html>
