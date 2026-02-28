@@ -3,58 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Attendance Pro</title>
+    <title>BOMIS Purnea - Attendance</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#1d4ed8">
+    <meta name="theme-color" content="#f97316">
     
-    <link rel="apple-touch-icon" href="https://img.icons8.com/fluency/192/checked-user-male.png">
-    <link rel="icon" type="image/png" href="https://img.icons8.com/fluency/48/checked-user-male.png">
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="icon" type="image/png" href="icon.png">
 
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkF0dGVuZGFuY2UgUHJvIiwKICAic2hvcnRfbmFtZSI6ICJBdHRlbmRhbmNlIiwKICAic3RhcnRfdXJsIjogIi4iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMxZDRlZDgiLAogICJ0aGVtZV9jb2xvciI6ICIjMWQ0ZWQ4Igp9">
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkJPTUlTIEF0dGVuZGFuY2UiLAogICJzaG9ydF9uYW1lIjogIkJPTUlTIEFBcCIsCiAgInN0YXJ0X3VybCI6ICIuIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjZjk3MzE2IiwKICAidGhlbWVfY29sb3IiOiAiI2Y5NzMxNiIKfQ==">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; padding-top: env(safe-area-inset-top); }
         .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
-        .logo-glow { filter: drop-shadow(0 0 8px rgba(255,255,255,0.4)); }
+        .school-gradient { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
     </style>
 </head>
-<body class="bg-slate-100 min-h-screen text-slate-900 flex flex-col">
+<body class="bg-orange-50 min-h-screen text-slate-900 flex flex-col">
 
-    <header class="bg-blue-700 text-white px-5 pt-6 pb-12 rounded-b-[2.5rem] shadow-lg sticky top-0 z-20">
+    <header class="school-gradient text-white px-5 pt-6 pb-12 rounded-b-[2.5rem] shadow-lg sticky top-0 z-20">
         <div class="max-w-md mx-auto">
             <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center gap-3">
-                    <div class="bg-white p-2 rounded-2xl shadow-inner logo-glow">
-                        <svg width="32" height="32" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect width="48" height="48" rx="12" fill="#1d4ed8"/>
-                            <path d="M14 24L21 31L34 18" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-                            <rect x="10" y="38" width="28" height="3" rx="1.5" fill="white" fill-opacity="0.3"/>
-                        </svg>
+                    <div class="bg-white p-1 rounded-full shadow-md">
+                        <img src="icon.png" alt="Logo" class="w-10 h-10 rounded-full object-cover" onerror="this.src='https://img.icons8.com/fluency/96/checked-user-male.png'">
                     </div>
                     <div>
-                        <h1 class="text-xl font-black tracking-tight leading-none">ATTENDANCE</h1>
-                        <p class="text-[10px] font-bold text-blue-200 tracking-widest uppercase">Report Dashboard</p>
+                        <h1 class="text-lg font-black tracking-tight leading-none uppercase">BOMIS PURNEA</h1>
+                        <p class="text-[9px] font-bold text-orange-100 tracking-widest uppercase opacity-80">Attendance AI Pro</p>
                     </div>
                 </div>
-                <button onclick="location.reload()" class="bg-white/10 p-2 rounded-full text-[9px] font-black uppercase">Reset</button>
+                <button onclick="location.reload()" class="bg-black/20 p-2 rounded-xl text-[9px] font-black uppercase">Reset</button>
             </div>
             
             <div id="statsHeader" class="grid grid-cols-3 gap-2 opacity-0 transition-opacity duration-500">
-                <div class="bg-white/10 p-3 rounded-2xl backdrop-blur-md border border-white/10 text-center">
-                    <p class="text-[9px] uppercase font-bold text-blue-200 mb-1">Percentage</p>
-                    <p id="h_perc" class="text-lg font-black leading-tight">0%</p>
+                <div class="bg-white/20 p-3 rounded-2xl backdrop-blur-md border border-white/10 text-center">
+                    <p class="text-[8px] uppercase font-bold text-orange-50 mb-1">Percentage</p>
+                    <p id="h_perc" class="text-lg font-black">0%</p>
                 </div>
-                <div class="bg-white/10 p-3 rounded-2xl backdrop-blur-md border border-white/10 text-center">
-                    <p class="text-[9px] uppercase font-bold text-blue-200 mb-1">Total Days</p>
-                    <p id="h_days" class="text-lg font-black leading-tight">0</p>
+                <div class="bg-white/20 p-3 rounded-2xl backdrop-blur-md border border-white/10 text-center">
+                    <p class="text-[8px] uppercase font-bold text-orange-50 mb-1">Total Days</p>
+                    <p id="h_days" class="text-lg font-black">0</p>
                 </div>
-                <div class="bg-white/10 p-3 rounded-2xl backdrop-blur-md border border-white/10 text-center">
-                    <p class="text-[9px] uppercase font-bold text-blue-200 mb-1">Avg/Day</p>
-                    <p id="h_avg" class="text-lg font-black leading-tight">0</p>
+                <div class="bg-white/20 p-3 rounded-2xl backdrop-blur-md border border-white/10 text-center">
+                    <p class="text-[8px] uppercase font-bold text-orange-50 mb-1">Avg/Day</p>
+                    <p id="h_avg" class="text-lg font-black">0</p>
                 </div>
             </div>
         </div>
@@ -62,45 +58,45 @@
 
     <main class="flex-grow max-w-md w-full mx-auto px-4 -mt-6 relative z-10 space-y-4 mb-28">
         
-        <div class="bg-white rounded-3xl p-5 shadow-xl border border-white/50">
-            <div id="dropZone" class="relative border-2 border-dashed border-slate-200 rounded-2xl p-8 text-center bg-slate-50 transition-all">
+        <div class="bg-white rounded-3xl p-5 shadow-xl border border-orange-100">
+            <div id="dropZone" class="relative border-2 border-dashed border-orange-200 rounded-2xl p-8 text-center bg-orange-50/30 transition-all">
                 <input type="file" id="imageInput" accept="image/*" onchange="onFilePicked(this)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
                 
                 <div id="promptContent" class="space-y-2">
-                    <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto shadow-sm">
+                    <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mx-auto shadow-sm">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                     </div>
-                    <p class="text-blue-600 font-bold">Upload or Take Photo</p>
-                    <p class="text-slate-400 text-[10px]">Select from Gallery or use Camera</p>
+                    <p class="text-orange-700 font-bold">Pick Register Photo</p>
+                    <p class="text-orange-400 text-[10px]">Camera or Gallery Access</p>
                 </div>
 
                 <div id="successContent" class="hidden flex flex-col items-center">
-                    <div class="w-12 h-12 bg-green-500 text-white rounded-full flex items-center justify-center mb-2 shadow-lg scale-110">✓</div>
-                    <p id="fileName" class="text-slate-700 font-bold text-xs truncate w-40 italic">File Loaded</p>
+                    <div class="w-12 h-12 bg-green-500 text-white rounded-full flex items-center justify-center mb-2 shadow-lg">✓</div>
+                    <p id="fileName" class="text-slate-700 font-bold text-xs truncate w-40 italic">Ready for analysis</p>
                 </div>
             </div>
             
-            <button onclick="analyze()" id="mainBtn" class="w-full mt-4 bg-slate-900 text-white font-black py-4 rounded-2xl shadow-lg active:scale-95 transition-all text-sm uppercase tracking-widest">
-                Start AI Analysis
+            <button onclick="analyze()" id="mainBtn" class="w-full mt-4 bg-orange-600 text-white font-black py-4 rounded-2xl shadow-lg active:scale-95 transition-all text-sm uppercase tracking-widest">
+                Start AI Scanning
             </button>
         </div>
 
         <div id="loading" class="hidden py-8 text-center">
-            <div class="inline-block w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-3"></div>
-            <p class="text-blue-600 font-bold text-xs animate-pulse tracking-wide uppercase">AI is analyzing register...</p>
+            <div class="inline-block w-8 h-8 border-4 border-orange-600 border-t-transparent rounded-full animate-spin mb-3"></div>
+            <p class="text-orange-600 font-bold text-xs animate-pulse tracking-wide uppercase">Reading handwritten marks...</p>
         </div>
 
-        <div id="results" class="hidden bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100">
-            <div class="px-5 py-4 bg-slate-50 flex justify-between items-center border-b">
-                <span class="text-[10px] font-black uppercase text-slate-400 tracking-widest">Student Report</span>
-                <button onclick="download()" class="text-blue-600 text-[10px] font-black underline decoration-2 underline-offset-4">Export CSV</button>
+        <div id="results" class="hidden bg-white rounded-3xl shadow-xl overflow-hidden border border-orange-100">
+            <div class="px-5 py-4 bg-orange-50/50 flex justify-between items-center border-b border-orange-100">
+                <span class="text-[10px] font-black uppercase text-orange-600 tracking-widest">BOMIS Report</span>
+                <button onclick="download()" class="text-orange-700 text-[10px] font-black underline decoration-2 underline-offset-4">Export CSV</button>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-left">
-                    <thead class="bg-slate-50 text-[10px] font-bold text-slate-400 uppercase">
+                    <thead class="bg-orange-50 text-[10px] font-bold text-orange-400 uppercase">
                         <tr><th class="px-6 py-3">Student Name</th><th class="px-4 py-3 text-center">P</th><th class="px-4 py-3 text-center">A</th></tr>
                     </thead>
-                    <tbody id="tableBody" class="divide-y divide-slate-100 text-sm"></tbody>
+                    <tbody id="tableBody" class="divide-y divide-orange-50 text-sm"></tbody>
                 </table>
             </div>
         </div>
@@ -111,7 +107,7 @@
             <p class="text-[9px] font-bold text-slate-400 uppercase">Working Days</p>
             <p class="text-sm font-black"><span id="daysCount">0</span> Days</p>
         </div>
-        <button onclick="changeDays()" class="bg-blue-600 hover:bg-blue-500 active:scale-90 transition-all px-6 py-3 rounded-full text-[10px] font-black uppercase">Correct Days</button>
+        <button onclick="changeDays()" class="bg-orange-600 hover:bg-orange-500 active:scale-90 transition-all px-6 py-3 rounded-full text-[10px] font-black uppercase">Edit Days</button>
     </div>
 
     <script type="module">
@@ -123,6 +119,7 @@
         window.onFilePicked = (el) => {
             if(el.files[0]) {
                 document.getElementById('promptContent').classList.add('hidden');
+                document.getElementById('uploadSuccess').classList.remove('hidden'); // Fixed typo
                 document.getElementById('successContent').classList.remove('hidden');
                 document.getElementById('fileName').innerText = el.files[0].name;
                 document.getElementById('dropZone').classList.add('bg-green-50', 'border-green-300');
@@ -131,15 +128,14 @@
 
         window.analyze = async () => {
             const input = document.getElementById('imageInput');
-            if(!input.files[0]) return alert("Please select or take a photo!");
+            if(!input.files[0]) return alert("Please select a photo!");
             toggleUI(true);
 
             try {
-                // Using Gemini 2.5 Flash for the best handwritten OCR results
                 const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" }, { apiVersion: "v1" });
                 const base64 = await toBase64(input.files[0]);
 
-                const prompt = "Act as a precision registrar. Read this attendance sheet. Identify student names. Count total present marks '|' or '1' and absent 'Ab'. Make sure the total number of days is consistent. Return JSON ONLY: [{'n':'NAME','p':10,'a':2}]";
+                const prompt = "Read this school attendance sheet. Count student names and their total present '|' and absent 'Ab'. Ensure total working days are consistent for all students. Return JSON ONLY: [{'n':'NAME','p':10,'a':2}]";
 
                 const result = await model.generateContent([prompt, base64]);
                 const data = JSON.parse(result.response.text().replace(/```json|```/g, ""));
@@ -173,13 +169,13 @@
         }
 
         window.changeDays = () => {
-            const d = prompt("Enter the correct number of working days:");
+            const d = prompt("Correct working days count:");
             if(d && !isNaN(d)) updateStats(window.rawScan, parseInt(d));
         };
 
         function render(data) {
             document.getElementById('tableBody').innerHTML = data.map(r => `
-                <tr>
+                <tr class="active:bg-orange-50">
                     <td class="px-6 py-4 font-bold text-slate-700 uppercase">${r.n}</td>
                     <td class="px-4 py-4 text-center text-green-600 font-black">${r.p}</td>
                     <td class="px-4 py-4 text-center text-red-400 font-black">${r.a}</td>
@@ -205,7 +201,7 @@
             const csv = "Name,Present,Absent\n" + window.rawScan.map(r => `"${r.n}",${r.p},${r.a}`).join("\n");
             const a = document.createElement('a');
             a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
-            a.download = "Attendance_Report.csv";
+            a.download = "BOMIS_Attendance_Report.csv";
             a.click();
         };
     </script>
